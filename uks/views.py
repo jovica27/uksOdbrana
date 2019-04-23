@@ -154,3 +154,60 @@ def project_delete(request, project_id):
     if request.method == 'POST':
         Project.objects.filter(id=project_id).delete()
         return HttpResponseRedirect(reverse('uks:projects'))
+
+
+def project_add_member(request, project_id):
+    if request.method == 'POST':
+        member_username = request.POST['member_username']
+        project = get_object_or_404(Project, id=project_id)
+        print(member_username)
+        u = get_object_or_404(User, username=member_username)
+
+        found = UserProject.objects.filter(project=project.id, user=u.id).count()
+        if found != 0:
+            return HttpResponse("This member is already added")
+
+        up = UserProject(project=project, user=u)
+        up.save()
+        # return HttpResponseRedirect(reverse('uks:projects'))
+        return project_details(request, project_id)
+
+
+def branch_details(request, project_id, branch_id):
+
+    project = Project.objects.get(id=project_id)
+    branch = Branch.objects.get(id=branch_id)
+    template = loader.get_template('uks/branch_details.html')
+    commits = Commit.objects.filter(branch=branch)
+    context = {
+        'project': project,
+        'branch': branch,
+        'commits': commits
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def branch_create(request, project_id):
+    branch_name = request.POST['branch_name']
+    p = get_object_or_404(Project, id=project_id)
+    branch = Branch(name=branch_name, project=p)
+    branch.save()
+    return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))
+
+
+def branch_update(request, project_id, branch_id):
+    if request.method == 'POST':
+        branch_name = request.POST['branch_name']
+        branch = Branch.objects.get(id=branch_id)
+        branch.name = branch_name
+        branch.save()
+        # return HttpResponseRedirect(
+        #     reverse('uks:project_details', kwargs={'project_id':project_id})
+        # )
+        return branch_details(request, project_id, branch_id)
+
+
+def branch_delete(request, project_id, branch_id):
+    if request.method == 'POST':
+        Branch.objects.filter(id=branch_id).delete()
+        return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))

@@ -255,3 +255,69 @@ def commit_delete(request, project_id, branch_id, commit_id):
         return HttpResponseRedirect(
             reverse('uks:branch_details',kwargs={'project_id':project_id, 'branch_id': branch_id})
         )
+
+def issue_details(request, project_id, issue_id):
+    project = Project.objects.get(id=project_id)
+    issue = Issue.objects.get(id=issue_id)
+    template = loader.get_template('uks/issue_details.html')
+    milestones = Milestone.objects.filter(issue=issue)
+
+    issue_labels = IssueLabel.objects.filter(issue=issue)
+    labels = []
+
+    all_labels = Label.objects.all()
+
+    for issue_label in issue_labels:
+        labels.append(issue_label.label)
+
+    issue_assignments = IssueAssignment.objects.filter(issue=issue)
+    assignees = []
+
+    for issue_assignment in issue_assignments:
+        assignees.append(issue_assignment.user)
+
+    userProjects = UserProject.objects.filter(project=project.id)
+    members = []
+
+    for up in userProjects:
+        members.append(up.user)
+
+    context = {
+        'project': project,
+        'issue': issue,
+        'milestones': milestones,
+        'labels': labels,
+        'all_labels': all_labels,
+        'assignees': assignees,
+        'members': members
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def issue_create(request, project_id):
+    issue_name = request.POST['issue_name']
+    issue_description = request.POST['issue_description']
+    p = get_object_or_404(Project, id=project_id)
+    issue = Issue(name=issue_name, description=issue_description, project=p)
+    issue.save()
+    return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))
+
+
+def issue_update(request, project_id, issue_id):
+    if request.method == 'POST':
+        issue_name = request.POST['issue_name']
+        issue_description = request.POST['issue_description']
+        issue = Issue.objects.get(id=issue_id)
+        issue.name = issue_name
+        issue.description = issue_description
+        issue.save()
+        # return HttpResponseRedirect(
+        #     reverse('uks:project_details', kwargs={'project_id':project_id})
+        # )
+        return issue_details(request, project_id, issue_id)
+
+
+def issue_delete(request, project_id, issue_id):
+    if request.method == 'POST':
+        Issue.objects.filter(id=issue_id).delete()
+        return HttpResponseRedirect(reverse('uks:project_details',kwargs={'project_id':project_id}))

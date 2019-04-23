@@ -321,3 +321,34 @@ def issue_delete(request, project_id, issue_id):
     if request.method == 'POST':
         Issue.objects.filter(id=issue_id).delete()
         return HttpResponseRedirect(reverse('uks:project_details',kwargs={'project_id':project_id}))
+
+def issue_add_label(request, project_id, issue_id):
+    if request.method == 'POST':
+        label_name = request.POST['label_name']
+
+        issue = get_object_or_404(Issue, id=issue_id)
+        label = get_object_or_404(Label, name=label_name)
+
+        found = IssueLabel.objects.filter(issue=issue.id, label=label.id).count()
+        if found != 0:
+            return HttpResponse("This label is already added")
+
+        issue_label = IssueLabel(issue=issue, label=label)
+        issue_label.save()
+        return HttpResponseRedirect(reverse('uks:issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))
+
+
+def issue_add_assignee(request, project_id, issue_id):
+    if request.method == 'POST':
+        assignee_username = request.POST['assignee_username']
+        issue = get_object_or_404(Issue, id=issue_id)
+
+        assignee = get_object_or_404(User, username=assignee_username)
+
+        found = IssueAssignment.objects.filter(issue=issue.id, user=assignee.id).count()
+        if found != 0:
+            return HttpResponse("This assignee is already added")
+
+        assignment = IssueAssignment(issue=issue, user=assignee)
+        assignment.save()
+        return HttpResponseRedirect(reverse('uks:issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))

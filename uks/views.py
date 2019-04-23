@@ -211,3 +211,47 @@ def branch_delete(request, project_id, branch_id):
     if request.method == 'POST':
         Branch.objects.filter(id=branch_id).delete()
         return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))
+	
+	
+def commit_details(request, project_id, branch_id, commit_id):
+
+    project = Project.objects.get(id=project_id)
+    branch = Branch.objects.get(id=branch_id)
+    commit = Commit.objects.get(id=commit_id)
+
+    template = loader.get_template('uks/commit_details.html')
+    context = {
+        'project': project,
+        'branch': branch,
+        'commit': commit
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def commit_create(request, project_id, branch_id):
+    commit_message = request.POST['commit_message']
+    p = get_object_or_404(Project, id=project_id)
+    b = get_object_or_404(Branch, id=branch_id)
+    commit_hash = get_random_string(length=32)
+    creation_date = datetime.datetime.now()
+    user = User.objects.get(id=request.session['id'])
+
+    commit = Commit(
+        message=commit_message,
+        hash=commit_hash,
+        creation_date=creation_date,
+        branch=b,
+        user=user
+    )
+    commit.save()
+    return HttpResponseRedirect(
+        reverse('uks:branch_details', kwargs={'project_id': project_id, 'branch_id': branch_id})
+    )
+
+def commit_delete(request, project_id, branch_id, commit_id):
+
+    if request.method == 'POST':
+        Commit.objects.filter(id=commit_id).delete()
+        return HttpResponseRedirect(
+            reverse('uks:branch_details',kwargs={'project_id':project_id, 'branch_id': branch_id})
+        )

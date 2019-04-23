@@ -1,0 +1,42 @@
+{% extends 'uks/base.html' %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-8">
+        <h1> Projects</h1>
+        <div>
+            {% if projects %}
+                <ul class="list-group">
+                {% for project in projects %}
+                    <li class="list-group-item" >
+                        <a class="btn btn-link" href="/uks/projects/{{ project.id }}">{{ project.name }}</a>
+                    </li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>There are no projects</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="col-4">
+    <h4>Create project</h4>
+
+    <form action="{% url 'uks:project_create'  %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Name:</label><br />
+            <input type="text" name="project_name" value="" />
+        </div>
+        <div class="form-group">
+            <label>Description:</label><br />
+            <input type="text" name="project_description" value="" />
+        </div>
+        <input type="submit" class="btn btn-success" value="Create"/>
+    </form>
+    </div>
+
+<hr>
+
+{% endblock %}

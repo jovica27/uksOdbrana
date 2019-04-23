@@ -1,0 +1,47 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <title>UKS</title>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg  navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">MAJ Version Control</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </nav>
+
+    <br>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+              <li class="{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <div class="container">
+         <div class="card">
+             <h4 class="card-header text-center">Login</h4>
+             <div class="card-body">
+             <form action="{% url 'uks:login_user'  %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label>Username:</label><br />
+                    <input type="text" name="username" value="" />
+                </div>
+                <div class="form-group">
+                    <label>Password:</label><br />
+                    <input type="password" name="password" value="" />
+                </div>
+                <input type="submit" class="btn btn-primary" value="Login"/>
+            </form>
+            </div>
+         </div>
+    </div>
+
+  </body>
+</html>

@@ -1,0 +1,45 @@
+{% extends 'uks/base.html' %}
+
+{% block content %}
+
+<h2>{{milestone.name}}</h2>
+<hr>
+    <h5> project: <span class="text-primary">{{project.name}} </span> </h5>
+    <h5> issue: <span class="text-primary">{{issue.name}} </span> </h5>
+    <h5> start date: <span class="text-primary">{{milestone.start_date}} </span> </h5>
+    <h5> end date: <span class="text-primary">{{milestone.end_date}} </span> </h5>
+<hr>
+
+<h4> Description </h4>
+<h6> {{milestone.description}}</h6>
+
+<hr>
+
+<form action="{% url 'uks:milestone_update' project.id issue.id milestone.id %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label>Milestone name:</label><br />
+        <input type="textarea" name="milestone_name" value="{{milestone.name}}" />
+    </div>
+    <div class="form-group">
+        <label>Milestone description:</label><br />
+        <input type="textarea" name="milestone_description" value="{{milestone.description}}" />
+    </div>
+    <div class="form-group">
+        <label>Start date:</label><br />
+        <input type="date" name="start_date" disabled value="{{milestone.start_date}}" />
+    </div>
+     <div class="form-group">
+        <label>End date:</label><br />
+        <input type="date" name="end_date" value="{{milestone.end_date}}" />
+    </div>
+    <input type="submit" class="btn btn-warning" value="Update milestone"/>
+</form>
+
+<hr>
+
+<form action="{% url 'uks:milestone_delete' project.id issue.id milestone.id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Delete milestone"/>
+</form>
+{% endblock %}

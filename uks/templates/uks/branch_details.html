@@ -1,0 +1,58 @@
+{% extends 'uks/base.html' %}
+
+{% block content %}
+
+<h1><span>{{branch.name}} </span> <span class="font-italic text-info"> [{{project.name}}] </span> </h1>
+
+<hr>
+
+<div class="row">
+     <div class="col-7">
+        <h2>Commits</h2>
+        {% if commits %}
+        <ul class="list-group">
+            {% for commit in commits %}
+                <li class="list-group-item" >
+                    <a class="btn btn-link float-right" href="/uks/projects/{{ project.id }}/branches/{{ branch.id }}/commits/{{ commit.id }}">{{ commit.hash }}</a>
+                    <p > {{commit.message}}</p>
+                    <p > {{commit.creation_date}}</p>
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>There are no commits.</p>
+        {% endif %}
+
+        <hr>
+
+         <form action="{% url 'uks:commit_create' project.id branch.id %}" method="post">
+            {% csrf_token %}
+             <div class="form-group">
+                <label>Commit message</label><br />
+                <input type="textarea" name="commit_message" value="" />
+            </div>
+            <input type="submit" class="btn btn-primary" value="Add commit"/>
+        </form>
+    </div>
+
+    <div class="col">
+        <form action="{% url 'uks:branch_update' project.id branch.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Branch name</label><br />
+                <input type="text" name="branch_name" value="{{branch.name}}" />
+            </div>
+            <input type="submit" class="btn btn-warning" value="Update branch"/>
+        </form>
+    </div>
+    <div class="col">
+        <form action="{% url 'uks:branch_delete' project.id branch.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Delete branch"/>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'uks/base.html' %}
+
+{% block content %}
+
+<h1><span>{{issue.name}} </span> <span class="font-italic text-info"> [{{project.name}}] </span> </h1>
+
+<hr>
+
+<h4> Description </h4>
+<h6> {{issue.description}}</h6>
+
+<hr>
+
+<div class="row">
+     <div class="col-7">
+        <form action="{% url 'uks:issue_update' project.id issue.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Issue name:</label>
+                <input type="text" name="issue_name" value="{{issue.name}}" />
+            </div>
+
+            <div class="form-group">
+                <label>Issue description:</label>
+                <input type="text" name="issue_description" value="{{issue.description}}" />
+            </div>
+
+            <input type="submit" class="btn btn-warning" value="Update issue"/>
+        </form>
+     </div>
+    <div class="col">
+        <form action="{% url 'uks:issue_delete' project.id issue.id %}" method="post">
+            {% csrf_token %}
+            <input type="submit" class="btn btn-danger" value="Delete issue"/>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+
+<div class="row">
+    <div class="col-7">
+        <h2>Milestones</h2>
+
+        {% if milestones %}
+        <ul class="list-group">
+            {% for milestone in milestones %}
+                <li class="list-group-item" >
+                    <a href="/uks/projects/{{ project.id }}/issues/{{ issue.id }}/milestones/{{ milestone.id }}">{{ milestone.name }}</a>
+                    <p > {{milestone.description}}</p>
+                </li>
+            {% endfor %}
+        </ul>
+            {% else %}
+            <p>No milestones are available.</p>
+        {% endif %}
+    </div>
+    <div class="col">
+        <form action="{% url 'uks:milestone_create' project.id issue.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Milestone name:</label><br />
+                <input type="textarea" name="milestone_name" value="" />
+            </div>
+            <div class="form-group">
+                <label>Milestone description:</label><br />
+                <input type="textarea" name="milestone_description" value="" />
+            </div>
+            <div class="form-group">
+                <label>Start date:</label><br />
+                <input type="date" name="start_date" value="" />
+            </div>
+             <div class="form-group">
+                <label>End date:</label><br />
+                <input type="date" name="end_date" value="" />
+            </div>
+            <input type="submit" class="btn btn-success" value="Create milestone"/>
+        </form>
+    </div>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col-7">
+        <h2>Labels</h2>
+
+        {% if labels %}
+        <ul class="list-group">
+            {% for label in labels %}
+                <li class="list-group-item" >
+                    <a class="btn btn-link" href="/uks/labels/{{ label.id }}">{{ label.name }}</a>
+                    <p > {{label.description}}</p>
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No labels are available.</p>
+        {% endif %}
+    </div>
+
+    <div class="col">
+        <form action="{% url 'uks:issue_add_label' project.id issue.id %}" method="post">
+            {% csrf_token %}
+             <div class="form-group">
+                <label>Label name:</label><br />
+                 <select name="label_name">
+                    {% for label in all_labels %}
+                        <option value="{{label.name}}">{{label.name}}</option>
+                    {% endfor %}
+                </select>
+             </div>
+            <input type="submit" class="btn btn-primary" value="Add label"/>
+        </form>
+    </div>
+    <div class="col">
+        <a class="btn btn-link" href="/uks/labels">ALL LABELS</a>
+    </div>
+</div>
+
+<hr>
+
+<div class="row">
+    <div class="col-7">
+        <h2>Assignees</h2>
+
+        {% if assignees %}
+        <ul class="list-group">
+            {% for assignee in assignees %}
+                <li class="list-group-item" >
+                    {{ assignee.username }}
+                </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>No assignees are available.</p>
+        {% endif %}
+    </div>
+
+    <div class="col">
+        <form action="{% url 'uks:issue_add_assignee' project.id issue.id %}" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Assignee username:</label><br />
+<!--                <input type="text" name="assignee_username" value="" />-->
+                <select name="assignee_username">
+                    {% for member in members %}
+                        <option value="{{member.username}}">{{member.username}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <input type="submit" class="btn btn-primary" value="Add assignee"/>
+        </form>
+    </div>
+</div>
+{% endblock %}

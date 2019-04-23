@@ -1,0 +1,23 @@
+{% extends 'uks/base.html' %}
+
+{% block content %}
+
+<h2>Commit</h2>
+<hr>
+    <h5> hash: <span class="text-primary">{{commit.hash}} </span>  </h5>
+    <h5> project: <span class="text-primary">{{project.name}} </span> </h5>
+    <h5> branch: <span class="text-primary">{{branch.name}} </span> </h5>
+    <h5> user: <span class="text-primary">{{commit.user.email}} </span> </h5>
+    <h5> created: <span class="text-primary">{{commit.creation_date}} </span> </h5>
+<hr>
+
+<h4> Message: </h4>
+<h6> {{commit.message}}</h6>
+
+<hr>
+
+<form action="{% url 'uks:commit_delete' project.id branch.id commit.id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Delete commit"/>
+</form>
+{% endblock %}

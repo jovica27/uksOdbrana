@@ -1,0 +1,40 @@
+{% extends 'uks/base.html' %}
+
+{% block content %}
+
+<h2>{{label.name}}</h2>
+<hr>
+
+    <h5> color: <span class="text-primary">{{label.color}} </span> </h5>
+<hr>
+
+<h4> Description </h4>
+<h6> {{label.description}}</h6>
+
+<hr>
+
+<form action="{% url 'uks:label_update' label.id %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label>Label name:</label><br />
+        <input type="text" name="label_name" value="{{label.name}}" />
+    </div>
+
+    <div class="form-group">
+        <label>Label description:</label><br />
+        <input type="text" name="label_description" value="{{label.description}}" />
+    </div>
+    <div class="form-group">
+        <label>Label color:</label><br />
+        <input type="text" name="label_color" value="{{label.color}}" />
+    </div>
+    <input type="submit" class="btn btn-warning" value="Update label"/>
+</form>
+
+<hr>
+
+<form action="{% url 'uks:label_delete' label.id %}" method="post">
+    {% csrf_token %}
+    <input type="submit" class="btn btn-danger" value="Delete label"/>
+</form>
+{% endblock %}

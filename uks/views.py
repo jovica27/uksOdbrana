@@ -352,3 +352,59 @@ def issue_add_assignee(request, project_id, issue_id):
         assignment = IssueAssignment(issue=issue, user=assignee)
         assignment.save()
         return HttpResponseRedirect(reverse('uks:issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))
+
+def milestone_create(request, project_id, issue_id):
+    milestone_name = request.POST['milestone_name']
+    milestone_description = request.POST['milestone_description']
+    start_date = request.POST['start_date']
+    end_date = request.POST['end_date']
+    i = get_object_or_404(Issue, id=issue_id)
+    milestone = Milestone(
+        name=milestone_name,
+        description=milestone_description,
+        start_date=start_date,
+        end_date=end_date,
+        issue=i
+    )
+    milestone.save()
+    return HttpResponseRedirect(
+        reverse('uks:issue_details', kwargs={'project_id': project_id, 'issue_id': issue_id})
+    )
+
+
+def milestone_details(request, project_id, issue_id, milestone_id):
+    project = Project.objects.get(id=project_id)
+    issue = Issue.objects.get(id=issue_id)
+    milestone = Milestone.objects.get(id=milestone_id)
+
+    template = loader.get_template('uks/milestone_details.html')
+    context = {
+        'project': project,
+        'issue': issue,
+        'milestone': milestone
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def milestone_update(request, project_id, issue_id, milestone_id):
+    if request.method == 'POST':
+        milestone_name = request.POST['milestone_name']
+        milestone_description = request.POST['milestone_description']
+        end_date = request.POST['end_date']
+        milestone = Milestone.objects.get(id=milestone_id)
+        milestone.name = milestone_name
+        milestone.description = milestone_description
+        milestone.end_date = end_date
+        milestone.save()
+        # return HttpResponseRedirect(
+        #     reverse('uks:issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id})
+        # )
+        return milestone_details(request, project_id, issue_id, milestone_id)
+
+
+def milestone_delete(request, project_id, issue_id, milestone_id):
+    if request.method == 'POST':
+        Milestone.objects.filter(id=milestone_id).delete()
+        return HttpResponseRedirect(
+            reverse('uks:issue_details',kwargs={'project_id':project_id, 'issue_id': issue_id})
+)

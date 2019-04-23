@@ -86,3 +86,71 @@ def logout(request):
 
     return HttpResponse(template.render(context, request))
 
+
+def projects(request):
+    user = User.objects.get(id=request.session['id'])
+
+    p = list()
+    user_projects = UserProject.objects.all()
+
+    for up in user_projects:
+        if up.user == user:
+            p.append(up.project)
+
+    template = loader.get_template('uks/projects.html')
+    context = {
+        'projects': p
+    }
+
+    return HttpResponse(template.render(context, request))
+
+
+def project_create(request):
+    project_name = request.POST['project_name']
+    project_description = request.POST['project_description']
+
+    p = Project(name=project_name, description=project_description)
+    p.save()
+
+    u = User.objects.get(id=request.session['id'])
+    up = UserProject(project=p, user=u)
+    up.save()
+
+    return HttpResponseRedirect(reverse('uks:projects'))
+
+
+def project_details(request, project_id):
+    project = Project.objects.get(id=project_id)
+    branches = Branch.objects.filter(project=project)
+    issues = Issue.objects.filter(project=project)
+    template = loader.get_template('uks/project_details.html')
+
+    userProjects = UserProject.objects.filter(project=project.id)
+    members = []
+
+    for up in userProjects:
+        members.append(up.user.username)
+
+    context = {
+        'project': project,
+        'branches': branches,
+        'members': members,
+        'issues': issues
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def project_update(request, project_id):
+    if request.method == 'POST':
+        project_name = request.POST['project_name']
+        project = Project.objects.get(id=project_id)
+        project.name = project_name
+        project.save()
+        # return HttpResponseRedirect(reverse('uks:projects'))
+        return project_details(request, project_id)
+
+
+def project_delete(request, project_id):
+    if request.method == 'POST':
+        Project.objects.filter(id=project_id).delete()
+        return HttpResponseRedirect(reverse('uks:projects'))

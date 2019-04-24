@@ -143,8 +143,10 @@ def project_details(request, project_id):
 def project_update(request, project_id):
     if request.method == 'POST':
         project_name = request.POST['project_name']
+        project_description = request.POST['project_description']
         project = Project.objects.get(id=project_id)
         project.name = project_name
+        project.project_description = project_description
         project.save()
         # return HttpResponseRedirect(reverse('uks:projects'))
         return project_details(request, project_id)

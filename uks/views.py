@@ -408,3 +408,57 @@ def milestone_delete(request, project_id, issue_id, milestone_id):
         return HttpResponseRedirect(
             reverse('uks:issue_details',kwargs={'project_id':project_id, 'issue_id': issue_id})
 )
+
+
+def label_create(request):
+    label_name = request.POST['label_name']
+    label_description = request.POST['label_description']
+    label_color = request.POST['label_color']
+    label = Label(
+        name=label_name,
+        description=label_description,
+        color=label_color
+    )
+    label.save()
+    return HttpResponseRedirect(reverse('uks:label_list'))
+
+
+def label_list(request):
+    labels = Label.objects.all()
+    template = loader.get_template('uks/label_list.html')
+    context = {
+        'labels': labels,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def label_details(request, label_id):
+    label = Label.objects.get(id=label_id)
+    template = loader.get_template('uks/label_details.html')
+
+    context = {
+        'label': label,
+    }
+    return HttpResponse(template.render(context, request))
+
+
+def label_update(request, label_id):
+    if request.method == 'POST':
+        label_name = request.POST['label_name']
+        label_description = request.POST['label_description']
+        label_color = request.POST['label_color']
+
+        label = Label.objects.get(id=label_id)
+
+        label.name = label_name
+        label.description = label_description
+        label.color = label_color
+        label.save()
+        return label_details(request, label_id)
+        # return HttpResponseRedirect(reverse('vsc:label_list'))
+
+
+def label_delete(request, label_id):
+    if request.method == 'POST':
+        Label.objects.filter(id=label_id).delete()
+        return HttpResponseRedirect(reverse('uks:label_list'))

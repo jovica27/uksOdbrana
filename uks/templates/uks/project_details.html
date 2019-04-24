@@ -27,7 +27,7 @@
 
         <hr>
 
-        <form action="{% url 'uks:project_add_member' project.id %}" method="post">
+        <form action="{% url 'project_add_member' project.id %}" method="post">
             {% csrf_token %}
             <label>Member username:</label><br />
             <input type="text" name="member_username" value="" />
@@ -36,7 +36,7 @@
     </div>
 
     <div class="col">
-        <form action="{% url 'uks:project_update' project.id %}" method="post">
+        <form action="{% url 'project_update' project.id %}" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label>Project Name:</label><br />
@@ -50,7 +50,7 @@
             </form>
     </div>
     <div class="col">
-        <form action="{% url 'uks:project_delete' project.id %}" method="post">
+        <form action="{% url 'project_delete' project.id %}" method="post">
             {% csrf_token %}
             <input type="submit" class="btn btn-danger" value="Delete Project"/>
         </form>
@@ -75,7 +75,7 @@
      </div>
 
     <div class="col">
-        <form action="{% url 'uks:branch_create' project.id %}" method="post">
+        <form action="{% url 'branch_create' project.id %}" method="post">
         {% csrf_token %}
         <div class="form-group">
             <label>Branch name:</label><br />
@@ -105,7 +105,7 @@
      </div>
 
     <div class="col">
-        <form action="{% url 'uks:issue_create' project.id %}" method="post">
+        <form action="{% url 'issue_create' project.id %}" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label>Issue name:</label><br />

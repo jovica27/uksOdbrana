@@ -23,7 +23,10 @@ from django.shortcuts import redirect
 
 
 def index(request):
-    return HttpResponse("Index");
+    template = loader.get_template('uks/index.html')
+    context = {}
+
+    return HttpResponse(template.render(context, request))
 
 
 def home(request):
@@ -50,12 +53,12 @@ def register_user(request):
     try:
         user = User.objects.get(username=username)
         messages.info(request, 'User with that username already exists!')
-        return HttpResponseRedirect(reverse('uks:register'))
+        return HttpResponseRedirect(reverse('register'))
 
     except User.DoesNotExist:
         u = User(username=username, password=password, first_name=first_name, last_name=last_name, email=email)
         u.save()
-        return HttpResponseRedirect(reverse('uks:login'))
+        return HttpResponseRedirect(reverse('login'))
 
 
 def login(request):
@@ -72,11 +75,11 @@ def login_user(request):
     try:
         user = User.objects.get(username=username, password=password)
         request.session['id'] = user.id
-        return HttpResponseRedirect(reverse('uks:projects'))
+        return HttpResponseRedirect(reverse('projects'))
 
     except User.DoesNotExist:
         messages.info(request, 'Wrong credentials!')
-        return HttpResponseRedirect(reverse('uks:login'))
+        return HttpResponseRedirect(reverse('login'))
 
 
 def logout(request):
@@ -116,7 +119,7 @@ def project_create(request):
     up = UserProject(project=p, user=u)
     up.save()
 
-    return HttpResponseRedirect(reverse('uks:projects'))
+    return HttpResponseRedirect(reverse('projects'))
 
 
 def project_details(request, project_id):
@@ -153,7 +156,7 @@ def project_update(request, project_id):
 def project_delete(request, project_id):
     if request.method == 'POST':
         Project.objects.filter(id=project_id).delete()
-        return HttpResponseRedirect(reverse('uks:projects'))
+        return HttpResponseRedirect(reverse('projects'))
 
 
 def project_add_member(request, project_id):
@@ -192,7 +195,7 @@ def branch_create(request, project_id):
     p = get_object_or_404(Project, id=project_id)
     branch = Branch(name=branch_name, project=p)
     branch.save()
-    return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))
+    return HttpResponseRedirect(reverse('project_details', kwargs={'project_id':project_id}))
 
 
 def branch_update(request, project_id, branch_id):
@@ -210,7 +213,7 @@ def branch_update(request, project_id, branch_id):
 def branch_delete(request, project_id, branch_id):
     if request.method == 'POST':
         Branch.objects.filter(id=branch_id).delete()
-        return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))
+        return HttpResponseRedirect(reverse('project_details', kwargs={'project_id':project_id}))
 	
 	
 def commit_details(request, project_id, branch_id, commit_id):
@@ -245,7 +248,7 @@ def commit_create(request, project_id, branch_id):
     )
     commit.save()
     return HttpResponseRedirect(
-        reverse('uks:branch_details', kwargs={'project_id': project_id, 'branch_id': branch_id})
+        reverse('branch_details', kwargs={'project_id': project_id, 'branch_id': branch_id})
     )
 
 def commit_delete(request, project_id, branch_id, commit_id):
@@ -253,7 +256,7 @@ def commit_delete(request, project_id, branch_id, commit_id):
     if request.method == 'POST':
         Commit.objects.filter(id=commit_id).delete()
         return HttpResponseRedirect(
-            reverse('uks:branch_details',kwargs={'project_id':project_id, 'branch_id': branch_id})
+            reverse('branch_details',kwargs={'project_id':project_id, 'branch_id': branch_id})
         )
 
 def issue_details(request, project_id, issue_id):
@@ -300,7 +303,7 @@ def issue_create(request, project_id):
     p = get_object_or_404(Project, id=project_id)
     issue = Issue(name=issue_name, description=issue_description, project=p)
     issue.save()
-    return HttpResponseRedirect(reverse('uks:project_details', kwargs={'project_id':project_id}))
+    return HttpResponseRedirect(reverse('project_details', kwargs={'project_id':project_id}))
 
 
 def issue_update(request, project_id, issue_id):
@@ -320,7 +323,7 @@ def issue_update(request, project_id, issue_id):
 def issue_delete(request, project_id, issue_id):
     if request.method == 'POST':
         Issue.objects.filter(id=issue_id).delete()
-        return HttpResponseRedirect(reverse('uks:project_details',kwargs={'project_id':project_id}))
+        return HttpResponseRedirect(reverse('project_details',kwargs={'project_id':project_id}))
 
 def issue_add_label(request, project_id, issue_id):
     if request.method == 'POST':
@@ -335,7 +338,7 @@ def issue_add_label(request, project_id, issue_id):
 
         issue_label = IssueLabel(issue=issue, label=label)
         issue_label.save()
-        return HttpResponseRedirect(reverse('uks:issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))
+        return HttpResponseRedirect(reverse('issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))
 
 
 def issue_add_assignee(request, project_id, issue_id):
@@ -351,7 +354,7 @@ def issue_add_assignee(request, project_id, issue_id):
 
         assignment = IssueAssignment(issue=issue, user=assignee)
         assignment.save()
-        return HttpResponseRedirect(reverse('uks:issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))
+        return HttpResponseRedirect(reverse('issue_details', kwargs={'project_id':project_id, 'issue_id': issue_id}))
 
 def milestone_create(request, project_id, issue_id):
     milestone_name = request.POST['milestone_name']
@@ -368,7 +371,7 @@ def milestone_create(request, project_id, issue_id):
     )
     milestone.save()
     return HttpResponseRedirect(
-        reverse('uks:issue_details', kwargs={'project_id': project_id, 'issue_id': issue_id})
+        reverse('issue_details', kwargs={'project_id': project_id, 'issue_id': issue_id})
     )
 
 
@@ -406,7 +409,7 @@ def milestone_delete(request, project_id, issue_id, milestone_id):
     if request.method == 'POST':
         Milestone.objects.filter(id=milestone_id).delete()
         return HttpResponseRedirect(
-            reverse('uks:issue_details',kwargs={'project_id':project_id, 'issue_id': issue_id})
+            reverse('issue_details',kwargs={'project_id':project_id, 'issue_id': issue_id})
 )
 
 
@@ -420,7 +423,7 @@ def label_create(request):
         color=label_color
     )
     label.save()
-    return HttpResponseRedirect(reverse('uks:label_list'))
+    return HttpResponseRedirect(reverse('label_list'))
 
 
 def label_list(request):
@@ -461,4 +464,4 @@ def label_update(request, label_id):
 def label_delete(request, label_id):
     if request.method == 'POST':
         Label.objects.filter(id=label_id).delete()
-        return HttpResponseRedirect(reverse('uks:label_list'))
+        return HttpResponseRedirect(reverse('label_list'))

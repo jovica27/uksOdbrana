@@ -16,7 +16,7 @@
 
 <hr>
 
-<form action="{% url 'uks:commit_delete' project.id branch.id commit.id %}" method="post">
+<form action="{% url 'commit_delete' project.id branch.id commit.id %}" method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger" value="Delete commit"/>
 </form>

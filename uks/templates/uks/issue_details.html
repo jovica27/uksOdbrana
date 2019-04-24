@@ -13,7 +13,7 @@
 
 <div class="row">
      <div class="col-7">
-        <form action="{% url 'uks:issue_update' project.id issue.id %}" method="post">
+        <form action="{% url 'issue_update' project.id issue.id %}" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label>Issue name:</label>
@@ -29,7 +29,7 @@
         </form>
      </div>
     <div class="col">
-        <form action="{% url 'uks:issue_delete' project.id issue.id %}" method="post">
+        <form action="{% url 'issue_delete' project.id issue.id %}" method="post">
             {% csrf_token %}
             <input type="submit" class="btn btn-danger" value="Delete issue"/>
         </form>
@@ -57,7 +57,7 @@
         {% endif %}
     </div>
     <div class="col">
-        <form action="{% url 'uks:milestone_create' project.id issue.id %}" method="post">
+        <form action="{% url 'milestone_create' project.id issue.id %}" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label>Milestone name:</label><br />
@@ -101,7 +101,7 @@
     </div>
 
     <div class="col">
-        <form action="{% url 'uks:issue_add_label' project.id issue.id %}" method="post">
+        <form action="{% url 'issue_add_label' project.id issue.id %}" method="post">
             {% csrf_token %}
              <div class="form-group">
                 <label>Label name:</label><br />
@@ -139,7 +139,7 @@
     </div>
 
     <div class="col">
-        <form action="{% url 'uks:issue_add_assignee' project.id issue.id %}" method="post">
+        <form action="{% url 'issue_add_assignee' project.id issue.id %}" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label>Assignee username:</label><br />

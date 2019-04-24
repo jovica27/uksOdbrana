@@ -20,7 +20,7 @@
     <div class="col">
         <h3>Create label</h3>
 
-        <form action="{% url 'uks:label_create' %}" method="post">
+        <form action="{% url 'label_create' %}" method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label>Label name:</label><br />

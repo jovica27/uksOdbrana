@@ -26,7 +26,7 @@
         <div class="card">
              <h4 class="card-header text-center">Register</h4>
             <div class="card-body">
-             <form action="{% url 'uks:register_user'  %}" method="post">
+             <form action="{% url 'register_user'  %}" method="post">
                 {% csrf_token %}
                 <div class="form-group">
                     <label>Username:</label><br />

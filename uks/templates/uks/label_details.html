@@ -13,7 +13,7 @@
 
 <hr>
 
-<form action="{% url 'uks:label_update' label.id %}" method="post">
+<form action="{% url 'label_update' label.id %}" method="post">
     {% csrf_token %}
     <div class="form-group">
         <label>Label name:</label><br />
@@ -33,7 +33,7 @@
 
 <hr>
 
-<form action="{% url 'uks:label_delete' label.id %}" method="post">
+<form action="{% url 'label_delete' label.id %}" method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger" value="Delete label"/>
 </form>

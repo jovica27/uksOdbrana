@@ -15,7 +15,7 @@
 
 <hr>
 
-<form action="{% url 'uks:milestone_update' project.id issue.id milestone.id %}" method="post">
+<form action="{% url 'milestone_update' project.id issue.id milestone.id %}" method="post">
     {% csrf_token %}
     <div class="form-group">
         <label>Milestone name:</label><br />
@@ -38,7 +38,7 @@
 
 <hr>
 
-<form action="{% url 'uks:milestone_delete' project.id issue.id milestone.id %}" method="post">
+<form action="{% url 'milestone_delete' project.id issue.id milestone.id %}" method="post">
     {% csrf_token %}
     <input type="submit" class="btn btn-danger" value="Delete milestone"/>
 </form>

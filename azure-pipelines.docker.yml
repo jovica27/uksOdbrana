@@ -4,7 +4,8 @@ pool:
   vmImage: 'Ubuntu 16.04'
 
 variables:
-  imageName: 'djangoproject:$(Build.BuildId)'
+#  imageName: 'djangoproject:$(Build.BuildId)'
+  imageName: 'djangoproject'
   dockerId: jovica27
   dockerPassword: lajkaimeda1!
   # define two more variables dockerId and dockerPassword in the build pipeline in UI

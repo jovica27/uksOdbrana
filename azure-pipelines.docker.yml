@@ -54,9 +54,9 @@ steps:
 - script: |
     docker build -f Dockerfile -t $(dockerId)/$(imageName) .
     docker tag $(dockerId)/$(imageName) $(dockerId)/$(imageName):latest
-    docker-compose -f docker-compose.yml . -p docs up -d
-    docker wait docs_sut_1
-    docker-compose -f docker-compose.yml . down
+#    docker-compose -f docker-compose.yml . -p docs up -d
+#    docker wait docs_sut_1
+#    docker-compose -f docker-compose.yml . down
 #    docker-compose up
 #    docker-compose down
     docker login -u $(dockerId) -p $pswd
